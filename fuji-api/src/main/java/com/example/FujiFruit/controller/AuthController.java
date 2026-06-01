@@ -65,22 +65,37 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "User login", description = "Authenticate user and return a JWT token")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Login successful, JWT token returned",
-                    content = @Content(schema = @Schema(implementation = ResponseDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "200", description = "Login successful, JWT token returned"),
             @ApiResponse(responseCode = "401", description = "Invalid username or password")
     })
-    public ResponseEntity<ResponseDTO<JwtResponse>> login(
+    public ResponseEntity<?> login(
             @Valid @RequestBody @Parameter(description = "User login credentials") LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsername(),
-                        loginRequest.getPassword()
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtil.generateToken(authentication);
-        return ResponseEntity.ok(ResponseDTO.success("Đăng nhập thành công", new JwtResponse(jwt)));
+        
+        try {
+            // Thử xác thực người dùng
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword()
+                    )
+            );
+            
+            // Nếu thành công -> tạo token
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtil.generateToken(authentication);
+            return ResponseEntity.ok(ResponseDTO.success("Đăng nhập thành công", new JwtResponse(jwt)));
+            
+        } catch (org.springframework.security.authentication.BadCredentialsException e) {
+            // NẾU SAI MẬT KHẨU HOẶC TÀI KHOẢN KHÔNG TỒN TẠI
+            // Trả về HTTP 401 thay vì để Spring tự văng lỗi 403
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ResponseDTO.error("Sai tên đăng nhập hoặc mật khẩu!"));
+                    
+        } catch (Exception e) {
+            // Bắt các lỗi hệ thống khác
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseDTO.error("Lỗi đăng nhập: " + e.getMessage()));
+        }
     }
 
     @GetMapping("/verify")

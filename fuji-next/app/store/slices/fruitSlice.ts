@@ -79,7 +79,7 @@ export const fetchFruitById = createAsyncThunk<Fruit, number, { rejectValue: str
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${API_BASE_URL}/${id}`);
-      return response.data.data;
+      return response.data?.data ?? response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
@@ -96,7 +96,7 @@ export const fetchAllFruits = createAsyncThunk<
       const response = await axios.get(API_BASE_URL, {
         params: { page, size },
       });
-      return response.data.data;
+      return response.data?.data ?? response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
@@ -151,7 +151,7 @@ export const searchFruitsByName = createAsyncThunk<
         params,
       });
 
-      return response.data.data;
+      return response.data?.data ?? response.data;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || error.message
@@ -187,7 +187,7 @@ export const fetchRelatedFruits = createAsyncThunk(
       const response = await axios.get(
         `${API_BASE_URL}/${fruitId}/related?page=${page}&size=${size}`
       );
-      return response.data.data;
+      return response.data?.data ?? response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
@@ -243,14 +243,14 @@ const fruitSlice = createSlice({
       })
       .addCase(fetchAllFruits.fulfilled, (state, action) => {
         state.loading = false;
-        state.fruits = action.payload.content;
+        state.fruits = action.payload?.content || action.payload || [];
         state.pagination = {
-          pageNumber: action.payload.pageable.pageNumber,
-          pageSize: action.payload.pageable.pageSize,
-          totalPages: action.payload.totalPages,
-          totalElements: action.payload.totalElements,
-          last: action.payload.last,
-          first: action.payload.first,
+          pageNumber: action.payload?.pageable?.pageNumber || action.payload?.number || 0,
+          pageSize: action.payload?.pageable?.pageSize || action.payload?.size || 10,
+          totalPages: action.payload?.totalPages || 1,
+          totalElements: action.payload?.totalElements || state.fruits.length,
+          last: action.payload?.last ?? true,
+          first: action.payload?.first ?? true,
         };
       })
       .addCase(fetchAllFruits.rejected, (state, action) => {
@@ -266,14 +266,14 @@ const fruitSlice = createSlice({
       })
       .addCase(searchFruitsByName.fulfilled, (state, action) => {
         state.loading = false;
-        state.fruits = action.payload.content;
+        state.fruits = action.payload?.content || action.payload || [];
         state.pagination = {
-          pageNumber: action.payload.pageable.pageNumber,
-          pageSize: action.payload.pageable.pageSize,
-          totalPages: action.payload.totalPages,
-          totalElements: action.payload.totalElements,
-          last: action.payload.last,
-          first: action.payload.first,
+          pageNumber: action.payload?.pageable?.pageNumber || action.payload?.number || 0,
+          pageSize: action.payload?.pageable?.pageSize || action.payload?.size || 10,
+          totalPages: action.payload?.totalPages || 1,
+          totalElements: action.payload?.totalElements || state.fruits.length,
+          last: action.payload?.last ?? true,
+          first: action.payload?.first ?? true,
         };
       })
       .addCase(searchFruitsByName.rejected, (state, action) => {
@@ -281,6 +281,7 @@ const fruitSlice = createSlice({
         state.error = action.payload || 'Unknown error';
       });
 
+    // Xử lý fetchRelatedFruits
     builder
       .addCase(fetchRelatedFruits.pending, (state) => {
         state.loading = true;
@@ -288,19 +289,22 @@ const fruitSlice = createSlice({
       })
       .addCase(fetchRelatedFruits.fulfilled, (state, action) => {
         state.loading = false;
-        state.relatedFruits = action.payload.content;
+        state.relatedFruits = action.payload?.content || action.payload || [];
         state.pagination = {
-          pageNumber: action.payload.pageable.pageNumber,
-          pageSize: action.payload.pageable.pageSize,
-          totalPages: action.payload.totalPages,
-          totalElements: action.payload.totalElements,
-          last: action.payload.last,
-          first: action.payload.first,
+          pageNumber: action.payload?.pageable?.pageNumber || action.payload?.number || 0,
+          pageSize: action.payload?.pageable?.pageSize || action.payload?.size || 10,
+          totalPages: action.payload?.totalPages || 1,
+          totalElements: action.payload?.totalElements || state.relatedFruits.length,
+          last: action.payload?.last ?? true,
+          first: action.payload?.first ?? true,
         };
       })
       .addCase(fetchRelatedFruits.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload || 'Unknown error';
       });
+
+    // Xử lý fetchFruitsByCategory
     builder
       .addCase(fetchFruitsByCategory.pending, (state) => {
         state.loading = true;
@@ -308,21 +312,20 @@ const fruitSlice = createSlice({
       })
       .addCase(fetchFruitsByCategory.fulfilled, (state, action) => {
         state.loading = false;
-        state.fruits = action.payload.content;
+        state.fruits = action.payload?.content || action.payload || [];
         state.pagination = {
-          pageNumber: action.payload.pageable.pageNumber,
-          pageSize: action.payload.pageable.pageSize,
-          totalPages: action.payload.totalPages,
-          totalElements: action.payload.totalElements,
-          last: action.payload.last,
-          first: action.payload.first,
+          pageNumber: action.payload?.pageable?.pageNumber || action.payload?.number || 0,
+          pageSize: action.payload?.pageable?.pageSize || action.payload?.size || 10,
+          totalPages: action.payload?.totalPages || 1,
+          totalElements: action.payload?.totalElements || state.fruits.length,
+          last: action.payload?.last ?? true,
+          first: action.payload?.first ?? true,
         };
       })
       .addCase(fetchFruitsByCategory.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload || 'Unknown error';
       });
- 
-
   },
 });
 

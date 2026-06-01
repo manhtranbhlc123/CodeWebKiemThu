@@ -1,5 +1,5 @@
 "use client";
-import { AdminTemplate } from "../components/template";
+import AdminTemplate from "../components/template";
 import NewsList from "./components/NewsList";
 import { useState } from "react";
 

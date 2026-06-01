@@ -1,0 +1,26 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.example:FujiFruit >------------------------
+[INFO] Building FujiFruit 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.4.5:run (default-cli) > test-compile @ FujiFruit >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ FujiFruit ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ FujiFruit ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ FujiFruit ---
+[INFO] skip non existing resourceDirectory D:\KiemThu2\UYDZ\fuji-api\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ FujiFruit ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:3.4.5:run (default-cli) < test-compile @ FujiFruit <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.4.5:run (default-cli) @ FujiFruit ---

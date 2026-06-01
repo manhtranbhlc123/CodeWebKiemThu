@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, type ReactNode } from "react"
+import React, { createContext, useContext, useState, type ReactNode } from "react"
 
 type AdminContextType = {
   sidebarOpen: boolean

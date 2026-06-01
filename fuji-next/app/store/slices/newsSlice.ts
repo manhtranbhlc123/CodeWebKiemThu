@@ -251,13 +251,15 @@ const newsSlice = createSlice({
       })
       .addCase(fetchNews.fulfilled, (state, action) => {
         state.loading = false;
-        state.newsItems = action.payload.content;
-        state.totalPages = action.payload.totalPages;
+        // Sử dụng Optional Chaining để chống crash
+        state.newsItems = action.payload?.content || action.payload || [];
+        state.totalPages = action.payload?.totalPages || 1;
       })
       .addCase(fetchNews.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
+      
       // Lấy danh mục
       .addCase(fetchCategories.pending, (state) => {
         state.loading = true;
@@ -265,12 +267,13 @@ const newsSlice = createSlice({
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
         state.loading = false;
-        state.categories = action.payload.content;
+        state.categories = action.payload?.content || action.payload || [];
       })
       .addCase(fetchCategories.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
+      
       // Lấy tin tức theo slug
       .addCase(fetchNewsBySlug.pending, (state) => {
         state.loading = true;
@@ -278,12 +281,14 @@ const newsSlice = createSlice({
       })
       .addCase(fetchNewsBySlug.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedNews = action.payload.data;
+        // Sửa lỗi gọi .data 2 lần bằng cách fallback
+        state.selectedNews = action.payload?.data || action.payload || null;
       })
       .addCase(fetchNewsBySlug.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
+      
       // Tạo tin tức
       .addCase(createNews.pending, (state) => {
         state.loading = true;
@@ -291,12 +296,15 @@ const newsSlice = createSlice({
       })
       .addCase(createNews.fulfilled, (state, action) => {
         state.loading = false;
-        state.newsItems.push(action.payload);
+        if (action.payload) {
+          state.newsItems.push(action.payload);
+        }
       })
       .addCase(createNews.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
+      
       // Cập nhật tin tức
       .addCase(updateNews.pending, (state) => {
         state.loading = true;
@@ -304,15 +312,18 @@ const newsSlice = createSlice({
       })
       .addCase(updateNews.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.newsItems.findIndex((news) => news.id === action.payload.id);
-        if (index !== -1) {
-          state.newsItems[index] = action.payload;
+        if (action.payload?.id) {
+          const index = state.newsItems.findIndex((news) => news.id === action.payload.id);
+          if (index !== -1) {
+            state.newsItems[index] = action.payload;
+          }
         }
       })
       .addCase(updateNews.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
+      
       // Xóa tin tức
       .addCase(deleteNews.pending, (state) => {
         state.loading = true;
@@ -326,6 +337,7 @@ const newsSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+      
       // Tìm kiếm tin tức
       .addCase(searchNews.pending, (state) => {
         state.loading = true;
@@ -333,13 +345,14 @@ const newsSlice = createSlice({
       })
       .addCase(searchNews.fulfilled, (state, action) => {
         state.loading = false;
-        state.newsItems = action.payload.content;
-        state.totalPages = action.payload.totalPages;
+        state.newsItems = action.payload?.content || action.payload || [];
+        state.totalPages = action.payload?.totalPages || 1;
       })
       .addCase(searchNews.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
+      
       // Tải ảnh lên
       .addCase(uploadNewsImage.pending, (state) => {
         state.loading = true;
@@ -352,6 +365,7 @@ const newsSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+      
       // Fetch article by slug
       .addCase(fetchArticleBySlug.pending, (state) => {
         state.loading = true;
@@ -359,14 +373,13 @@ const newsSlice = createSlice({
       })
       .addCase(fetchArticleBySlug.fulfilled, (state, action) => {
         state.loading = false;
-        state.article = action.payload.data;
-        console.log(state.article);
-        
+        state.article = action.payload?.data || action.payload || null;
       })
       .addCase(fetchArticleBySlug.rejected, (state, action) => {
         state.loading = false;
         state.error = (action.payload as any)?.data?.message || 'Không thể tải bài viết';
       })
+      
       // Fetch related articles
       .addCase(fetchRelatedArticles.pending, (state) => {
         state.loading = true;
@@ -374,7 +387,8 @@ const newsSlice = createSlice({
       })
       .addCase(fetchRelatedArticles.fulfilled, (state, action) => {
         state.loading = false;
-        state.relatedArticles = action.payload.data;
+        // Bắt mọi trường hợp: nằm trong .data, .content, hoặc là array trực tiếp
+        state.relatedArticles = action.payload?.data?.content || action.payload?.data || action.payload?.content || action.payload || [];
       })
       .addCase(fetchRelatedArticles.rejected, (state, action) => {
         state.loading = false;

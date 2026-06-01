@@ -1,5 +1,5 @@
 "use client";
-import { AdminTemplate } from "../components/template";
+import AdminTemplate from '../components/template';
 import CustomerList from "./components/CustomerList";
 
 export default function CustomersPage() {

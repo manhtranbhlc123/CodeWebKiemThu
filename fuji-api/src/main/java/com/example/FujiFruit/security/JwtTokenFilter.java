@@ -25,7 +25,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+            
         String header = request.getHeader("Authorization");
+        
+        // 1. Kiểm tra và set Token nếu có
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             if (jwtUtil.validateToken(token)) {
@@ -36,6 +39,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
+        
+        // 2. BẮT BUỘC PHẢI CÓ DÒNG NÀY Ở CUỐI CÙNG
+        // Cho phép request đi tiếp tới các Filter khác và vào Controller
         chain.doFilter(request, response);
     }
 }

@@ -35,45 +35,39 @@ public class WebConfig implements WebMvcConfigurer {
     private String uploadDir;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/auth/**",
-                                "/swagger-ui/**",
-                                "/api-docs/**",
-                                "/images/**",
-                                "/api/fruits/**",
-                                "/api/categories/**",
-                                "/api/news",
-                                "/api/news/{slug}",
-                                "/api/vnpay/**"
-                        ).permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/cart/**").hasRole("USER")
-                        .requestMatchers("/api/orders/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/orders/**").hasRole("USER")
-                        .requestMatchers("/api/users/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/users/**").hasRole("USER")
-                        .requestMatchers("/api/news/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/statistics/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(AbstractHttpConfigurer::disable)
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                        "/api/auth/**",
+                        "/swagger-ui/**",
+                        "/api-docs/**",
+                        "/images/**",
+                        "/api/fruits/**",
+                        "/api/categories/**",
+                        "/api/news/**",
+                        "/api/vnpay/**"
+                ).permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .anyRequest().authenticated()
+        )
+        .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+    return http.build();
+}
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3001"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("Authorization",
+        "Content-Type",
+        "Accept",
+        "Origin"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L); // Cache preflight 1 giờ
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

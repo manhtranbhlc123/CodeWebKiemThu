@@ -1,6 +1,6 @@
 'use client';
 
-import { AdminTemplate } from "../components/template";
+import AdminTemplate from '../components/template';
 import OrderList from "./components/OrderList";
 
 export default function OrdersPage() {
