@@ -314,6 +314,7 @@ const ProductsPage: React.FC = () => {
         }
       `}</style>
     </div>
+  </div>
   );
 };
 
