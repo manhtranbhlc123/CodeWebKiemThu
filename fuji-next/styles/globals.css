@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --background: 145 50% 95%;
+  --foreground: 220 18% 12%;
+  --card: 0 0% 100%;
+  --card-foreground: 220 18% 12%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 18% 12%;
+  --primary: 158 70% 30%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 42 100% 92%;
+  --secondary-foreground: 220 18% 12%;
+  --muted: 40 100% 97%;
+  --muted-foreground: 220 14% 45%;
+  --accent: 156 70% 45%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 17 85% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 142 40% 84%;
+  --input: 0 0% 100%;
+  --ring: 158 70% 30%;
+  --radius: 1rem;
+  --sidebar-background: 145 50% 95%;
+  --sidebar-foreground: 220 18% 12%;
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, rgba(22, 101, 52, 0.08), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.12), transparent 20%),
+    hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+* {
+  @apply border-border;
+}
+
+::selection {
+  background: rgba(34, 197, 94, 0.18);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .glass-card {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+  }
+}
+
+@layer base {
+  a {
+    text-decoration: none;
+  }
+  img {
+    display: block;
+    max-width: 100%;
+  }
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+}
