@@ -202,7 +202,6 @@ const ProductsPage = () => {
         )}
       </div>
     </div>
-  </div>
   );
 };
 
